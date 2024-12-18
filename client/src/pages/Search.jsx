@@ -136,7 +136,8 @@ export default function Search() {
               <option value='javascript'>JavaScript</option>
             </Select>
           </div>
-          <Button type='submit' outline gradientDuoTone='purpleToPink'>
+          <Button type='submit' outline className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white border-orange-600 
+                          hover:from-orange-600 hover:to-yellow-500 hover:text-white"> 
             Apply Filters
           </Button>
         </form>
