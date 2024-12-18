@@ -151,7 +151,8 @@ export default function CommentSection({ postId }) {
             <p className='text-gray-500 text-xs'>
               {200 - comment.length} characters remaining
             </p>
-            <Button outline gradientDuoTone='purpleToBlue' type='submit'>
+            <Button outline className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white border-orange-600 
+                          hover:from-orange-600 hover:to-yellow-500 hover:text-white" type='submit'> 
               Submit
             </Button>
           </div>

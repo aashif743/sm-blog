@@ -11,7 +11,7 @@ export default function FooterCom() {
       <div className="mt-5 text-center sm:text-left">
         <Link
           to="/"
-          className="self-center whitespace-nowrap text-sm sm:text-2xl font-semibold dark:text-white"
+          className="self-center whitespace-nowrap text-2xl sm:text-2xl font-semibold dark:text-white"
         >
           <span className="px-2 py-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400 rounded-lg text-white">
             Shahmy's
@@ -19,11 +19,12 @@ export default function FooterCom() {
           Blog
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-8 sm:mt-5 mt-10 sm:grid-cols-3 sm:gap-6">
+      <div className="grid grid-cols-2 gap-10 sm:mt-5 mt-10 sm:grid-cols-3 sm:gap-6">
         <div>
           <Footer.Title title="Contact Info" />
           <Footer.LinkGroup col>
-            <Footer.Link href="#">shahmyahamed@gmail.com</Footer.Link>
+            <Footer.Link href="#">shahmyahamed
+              @gmail.com</Footer.Link>
             <Footer.Link href="#">+94 77 585 8547</Footer.Link>
             <Footer.Link href="#">Balangoda, Sri Lanka</Footer.Link>
           </Footer.LinkGroup>
@@ -44,21 +45,23 @@ export default function FooterCom() {
           </Footer.LinkGroup>
         </div>
 
-        <div>
-          <Footer.Title title="Location Map" />
-          <div className="mt-4">
+        <div className="mt-1">
+        <Footer.Title title="Location Map" />
+          <div className="mt-4 rounded-lg overflow-hidden shadow-lg">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126750.34939293889!2d80.66513030000001!3d6.6557599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae32183ae362469%3A0x8b891d02dce7caa3!2sBalangoda%2C%20Sri%20Lanka!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
               width="100%"
-              height="200"
+              height="250"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Location Map"
+              className="rounded-lg"
             ></iframe>
           </div>
-        </div>
+      </div>
+
 
       </div>
     </div>
