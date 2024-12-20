@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import CallToAction from '../components/CallToAction';
 import CommentSection from '../components/CommentSection';
-import PostCard from '../components/PostCard';
+import PostCard from '../components/PostCard'; 
 
 export default function PostPage() {
   const { postSlug } = useParams(); 
@@ -97,47 +97,47 @@ export default function PostPage() {
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
 
-{post && post.videoUrl && (
-  <div className="mt-10 p-3 text-center">
-    <h2 className="text-xl font-semibold mb-3">Watch Related Video</h2>
-    <div className="video-box">
-      {(() => {
-        let embedUrl = post.videoUrl.trim(); // Ensure no leading/trailing spaces
+      {post && post.videoUrl && (
+        <div className="mt-10 p-3 text-center">
+          <h2 className="text-xl font-semibold mb-3">Watch Related Video</h2>
+          <div className="video-box">
+            {(() => {
+              let embedUrl = post.videoUrl.trim(); // Ensure no leading/trailing spaces
 
-        // Handle 'youtu.be' URLs
-        if (embedUrl.includes("youtu.be")) {
-          const videoId = embedUrl.split("youtu.be/")[1].split(/[?&]/)[0]; // Extract video ID
-          embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        }
+              // Handle 'youtu.be' URLs
+              if (embedUrl.includes("youtu.be")) {
+                const videoId = embedUrl.split("youtu.be/")[1].split(/[?&]/)[0]; // Extract video ID
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+              }
 
-        // Handle 'watch?v=' URLs
-        else if (embedUrl.includes("watch?v=")) {
-          embedUrl = embedUrl.replace("watch?v=", "embed/").split("&")[0]; // Remove extra query params
-        }
+              // Handle 'watch?v=' URLs
+              else if (embedUrl.includes("watch?v=")) {
+                embedUrl = embedUrl.replace("watch?v=", "embed/").split("&")[0]; // Remove extra query params
+              }
 
-        // Handle other invalid formats (optional logging)
-        if (!embedUrl.includes("youtube.com/embed/")) {
-          console.error("Invalid video URL:", post.videoUrl);
-          return <p className="text-red-500">Invalid video URL provided.</p>;
-        }
+              // Handle other invalid formats (optional logging)
+              if (!embedUrl.includes("youtube.com/embed/")) {
+                console.error("Invalid video URL:", post.videoUrl);
+                return <p className="text-red-500">Invalid video URL provided.</p>;
+              }
 
-        console.log("Processed Embed URL:", embedUrl); // Debugging
+              console.log("Processed Embed URL:", embedUrl); // Debugging
 
-        return (
-          <iframe
-            className="w-full"
-            height="315"
-            src={embedUrl}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        );
-      })()}
-    </div>
-  </div>
-)}
+              return (
+                <iframe
+                  className="w-full"
+                  height="315"
+                  src={embedUrl}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              );
+            })()}
+          </div>
+        </div>
+      )}
 
 
 

@@ -130,10 +130,17 @@ export default function Search() {
               value={sidebarData.category}
               id='category'
             >
-              <option value='uncategorized'>Uncategorized</option>
-              <option value='reactjs'>React.js</option>
-              <option value='nextjs'>Next.js</option>
-              <option value='javascript'>JavaScript</option>
+              <option value=''>Select a category</option>
+              <option value='motivation'>Motivation</option>
+              <option value='education-tips'>Education Tips</option>
+              <option value='study-hacks'>Study Hacks</option>
+              <option value='career-guidance'>Career Guidance</option>
+              <option value='teachers-corner'>Teacher’s Corner</option>
+              <option value='mental-health-counseling'>Mental Health & Counseling</option>
+              <option value='life-skills'>Life Skills</option>
+              <option value='success-stories'>Success Stories</option>
+              <option value='updates-announcements'>Updates & Announcements</option>
+              <option value='inspirational-quotes'>Inspirational Quotes</option> 
             </Select>
           </div>
           <Button type='submit' outline className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white border-orange-600 

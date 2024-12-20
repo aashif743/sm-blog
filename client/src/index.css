@@ -53,17 +53,17 @@ body {
 
 .video-box iframe {
   width: 500%;
-  height: 315px;
+  height: 180px;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 447px) {
   .video-box {
-    max-width: 800px;
+    max-width: 420px;
     margin: 0 auto;
   }
 
   .video-box iframe {
-    height: 400px;
+    height: 250px;
   }
 }
 
