@@ -6,7 +6,7 @@ import { BsFacebook, BsInstagram, BsTwitter, BsTiktok } from 'react-icons/bs';
 export default function FooterCom() {
   return (
     <Footer container className="border border-t-8 border-teal-500">
-  <div className="w-full max-w-7xl mx-auto">
+  <div className="w-full max-w-7xl mx-auto ">
     <div className="grid w-full justify-between sm:flex md:grid-cols-1">
       <div className="mt-5 text-center sm:text-left">
         <Link
@@ -50,8 +50,8 @@ export default function FooterCom() {
           <div className="mt-4 rounded-lg overflow-hidden shadow-lg">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126750.34939293889!2d80.66513030000001!3d6.6557599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae32183ae362469%3A0x8b891d02dce7caa3!2sBalangoda%2C%20Sri%20Lanka!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
-              width="100%"
-              height="250"
+              width="60%"
+              height="120"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"

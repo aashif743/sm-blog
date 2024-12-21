@@ -1,13 +1,6 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
-import { app } from '../firebase';
 import { useEffect, useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -25,71 +18,92 @@ export default function UpdatePost() {
   const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    try {
+    useEffect(() => {
       const fetchPost = async () => {
-        const res = await fetch(`/api/post/getposts?postId=${postId}`);
-        const data = await res.json();
-        if (!res.ok) {
-          console.log(data.message);
-          setPublishError(data.message);
-          return;
-        }
-        if (res.ok) {
-          setPublishError(null);
-          setFormData(data.posts[0]);
+        try {
+          const res = await fetch(`/api/post/getposts?postId=${postId}`);
+          const data = await res.json();
+          if (res.ok) {
+            setFormData(data.posts[0]); // Ensure _id is included in the fetched post data
+          } else {
+            setPublishError(data.message);
+          }
+        } catch (error) {
+          console.log(error.message);
         }
       };
-
+    
       fetchPost();
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [postId]);
+    }, [postId]);
+    
 
-  const handleUpdloadImage = async () => {
+  const handleUploadImage = async () => {
+    if (!file) {
+      setImageUploadError('Please select an image');
+      return;
+    }
+
     try {
-      if (!file) {
-        setImageUploadError('Please select an image');
-        return;
-      }
       setImageUploadError(null);
-      const storage = getStorage(app);
-      const fileName = new Date().getTime() + '-' + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImageUploadProgress(progress.toFixed(0));
+      const response = await fetch('/api/cloudinary/signature', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        (error) => {
-          setImageUploadError('Image upload failed');
-          setImageUploadProgress(null);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUploadProgress(null);
-            setImageUploadError(null);
-            setFormData({ ...formData, image: downloadURL });
-          });
+        body: JSON.stringify({ fileName: file.name }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Cloudinary signature');
+      }
+
+      const { signature, timestamp, apiKey, cloudName } = await response.json();
+
+      const uploadData = new FormData();
+      uploadData.append('file', file);
+      uploadData.append('timestamp', timestamp);
+      uploadData.append('api_key', apiKey);
+      uploadData.append('signature', signature);
+      uploadData.append('folder', 'user_profiles');
+
+      const uploadResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: 'POST',
+          body: uploadData,
         }
       );
-    } catch (error) {
-      setImageUploadError('Image upload failed');
+
+      if (!uploadResponse.ok) {
+        throw new Error('Image upload failed');
+      }
+
+      const uploadResult = await uploadResponse.json();
+      setFormData({ ...formData, image: uploadResult.secure_url });
+      setImageUploadError(null);
       setImageUploadProgress(null);
-      console.log(error);
+    } catch (error) {
+      setImageUploadError(error.message || 'Image upload failed');
+      setImageUploadProgress(null);
     }
   };
+
+// const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.videoUrl && !isValidYouTubeUrl(formData.videoUrl)) {
+      setPublishError('Invalid YouTube URL');
+      return;
+    }
+
     try {
+      const token = currentUser?.token; // Assuming the token is stored here
       const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Include token if required
         },
         body: JSON.stringify(formData),
       });
@@ -129,10 +143,17 @@ export default function UpdatePost() {
             }
             value={formData.category}
           >
-            <option value='uncategorized'>Select a category</option>
-            <option value='javascript'>JavaScript</option>
-            <option value='reactjs'>React.js</option>
-            <option value='nextjs'>Next.js</option>
+            <option value=''>Select a category</option>
+            <option value='motivation'>Motivation</option>
+            <option value='education-tips'>Education Tips</option>
+            <option value='study-hacks'>Study Hacks</option>
+            <option value='career-guidance'>Career Guidance</option>
+            <option value='teachers-corner'>Teacher’s Corner</option>
+            <option value='mental-health-counseling'>Mental Health & Counseling</option>
+            <option value='life-skills'>Life Skills</option>
+            <option value='success-stories'>Success Stories</option>
+            <option value='updates-announcements'>Updates & Announcements</option>
+            <option value='inspirational-quotes'>Inspirational Quotes</option>
           </Select>
         </div>
         <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
@@ -143,10 +164,11 @@ export default function UpdatePost() {
           />
           <Button
             type='button'
-            gradientDuoTone='purpleToBlue'
-            size='sm'
             outline
-            onClick={handleUpdloadImage}
+            className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white border-orange-600 
+                          hover:from-orange-600 hover:to-yellow-500 hover:text-white"
+            size='sm'
+            onClick={handleUploadImage}
             disabled={imageUploadProgress}
           >
             {imageUploadProgress ? (
@@ -170,10 +192,10 @@ export default function UpdatePost() {
           />
         )}
 
-        {/* Video URL Input */}
+        {/* Video URL Input */} 
         <TextInput
           type="text"
-          placeholder="Video URL (e.g., https://youtu.be/xyz)"
+          placeholder="YouTube Video URL (Optional)"
           id="videoUrl"
           onChange={(e) =>
             setFormData({ ...formData, videoUrl: e.target.value })
@@ -191,7 +213,7 @@ export default function UpdatePost() {
             setFormData({ ...formData, content: value });
           }}
         />
-        <Button type='submit' gradientDuoTone='purpleToPink'>
+        <Button type='submit' gradientDuoTone='orangeToYellow' className='bg-gradient-to-r from-orange-600 to-orange-500 text-white'>
           Update post
         </Button>
         {publishError && (
